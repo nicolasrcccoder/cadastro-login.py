@@ -1,84 +1,89 @@
-notaArquivo = 'notas.txt'
+import time
+todas_senhas = []
 
-def add_nota():
-  while True:  
-    try: 
-     nome_adicionar = str(input('digite o nome do aluno (aperte s para sair) : '))
-     if nome_adicionar.lower() == 's':
-         print('saindo...')
-         break
-     nota_adicionar = float(input('digite a nota do aluno(0 - 10) :')) 
-     if nota_adicionar > 10 or nota_adicionar < 0:
-       print('apenas números de 0 a 10! ')
-     else:
-        with open('notas.txt' , 'a') as notaArquivo:
-            notaArquivo.write(f'{nome_adicionar} - {nota_adicionar}\n')
-    except ValueError:
-      print('apenas números , isto é para adicionar uma nota!')         
+def cadastrar_login():
+  print('---REGISTRANDO USUÁRIO---')
+  nome_escolhido = str(input('seu nome :'))
+  senha_escolhida = str(input('sua senha :'))
+  senhas = {'nome': nome_escolhido ,
+            'senha':senha_escolhida
+            }
+  todas_senhas.append(senhas)
+  print('usuario cadastrado com sucesso!!!')
+  print('voltando ao menu...')
 
-
-def mostrar_notas():
-   with open ('notas.txt' , 'r') as notaArquivo:
-    try:
-        mostrando_notas = notaArquivo.readlines()
-        if not mostrando_notas:
-           print('não há nada aqui ainda')       
-        else:
-           for i , nota in enumerate(mostrando_notas , 1 ):
-              print(f' {i} - {nota.strip()}')
-    except FileNotFoundError:
-      print('arquivo não encontrado!')
-
-
-def atualizar_notas():
-   buscando_nome = str(input('procure o nome:'))
-   try:
-       with open('notas.txt' , 'r') as notaArquivo:
-          procurando_linhas = notaArquivo.readlines()
-
-       atualizado = False   
-       with open('notas.txt' , 'w') as notaArquivo:
-          for linha in procurando_linhas:
-             nome , nota = linha.strip().split(' - ')
-             #aqui a "linha.strip" faz com que tire a "\n" do console
-             # e o ".split(-)" faz com que a o nome - nota fique valores diferente como nome , nota
-             if nome.lower() == buscando_nome:
-                nova_nota = float(input(f'digite a nova nota para o {nome} : '))
-                notaArquivo.write(f'{nome} - {nova_nota}\n') 
-                atualizado = True            
-             else:
-                notaArquivo.write(f'{linha}')
-       if atualizado:
-          print(f'a nota de {buscando_nome} atualizada com sucesso!')
+def fazendo_login():
+  while True:
+    print('---ENTRE NO SEU PERFIL---')
+    nome_validando = str(input('digite seu nome (s para sair):'))
+    senha_validando = str(input('digite sua senha (s para sair) :'))
+    if nome_validando.lower() == 's' or senha_validando.lower() == 's':
+      print('voltando ao menu...')
+      break
+    for senhas in todas_senhas:
+       if nome_validando != senhas['nome'] or  senha_validando !=  senhas['senha']:
+        print('nome ou senha estão invalidos , tente novamente por favor. ')
+        continue
        else:
-          print('aluno não encontrado')
+         print('carregando...')
+         time.sleep(2)
+         print(f' seu nome : {senhas["nome"]} | sua senha : {senhas["senha"]}')
+         print('acesso concedido.')
+         print('-pagina aberta.')
+         time.sleep(2)
+         break
 
-   except FileNotFoundError:
-      print('arquivo não encontrado!') 
+def trocar_login():
+ while True:
+  print('---ESQUECEU SUA SENHA? QUER TROCA-LA?---')
+  nome_verificando = str(input('digite seu nome atual (s para sair): '))
+  senha_verificando = str(input('digite sua senha atual (s para sair) :'))
+  if nome_verificando.lower() == 's' or senha_verificando.lower() == 's':
+     print('voltando ao menu...')
+     break
+  for senhas in todas_senhas:
+     if nome_verificando == senhas['nome'] and senha_verificando == senhas['senha']:
+       novo_nome = str(input('digite seu novo nome :'))
+       nova_senha = str(input('digite sua nova senha :'))
+       senhas['nome'] = novo_nome
+       senhas['senha'] = nova_senha
+       print(' novo nome e senha cadastradas com sucesso!')
+       break
+  else:
+    print('nome ou senha incorretos! tente novamente.')
+ 
 
 def menu():
-   print('---PROGRAMA DE NOTAS DOS ALUNOS---')
-   print(' 1 - adicionar nota')
-   print(' 2 - mostrar notas')
-   print(' 3 - atualizar notas') 
-   print(' 4 - SAIR') 
+  print('==== CENTRAL DE CONTAS ====')
+  print(' 1 - cadastrar nome e senha ')
+  print(' 2 - fazer login com nome e senha ')
+  print(' 3 - trocar nome e senha ')
+  print(' 4 - SAIR')
+
 
 def main():
-  while True: 
+ while True:
+  try:
    menu()
-   opcao = (input('qual opcao :'))
-   if opcao == '1':
-      add_nota()
-   elif opcao == '2':
-      mostrar_notas()
-   elif opcao == '3':
-      atualizar_notas()    
-   elif opcao == '4':
-      print('encerrando o programa...')
-      break
+   opcao = int(input('qual a opcao :'))
+   if opcao == 1 :
+     cadastrar_login()
+   elif opcao == 2 :
+     fazendo_login()
+   elif opcao == 3 :
+     trocar_login()
+   elif opcao == 4 :
+     sim_ou_nao = input('tem certeza que deseja sair? (s ou n)')
+     if sim_ou_nao == 's':
+       print('encerrando o programa... até mais.')
+       break
+     elif sim_ou_nao == 'n':
+       print('voltando.')
    else:
-      print('opção invalida!') 
+     print('opção invalida!')
+  except ValueError:
+    print('apenas números!')
 
-main() 
+main()
 
 
